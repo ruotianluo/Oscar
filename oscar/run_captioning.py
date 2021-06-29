@@ -22,8 +22,10 @@ from oscar.utils.caption_evaluate import (evaluate_on_coco_caption,
 from oscar.utils.cbs import ConstraintFilter, ConstraintBoxesReader
 from oscar.utils.cbs import FiniteStateMachineBuilder
 from oscar.modeling.modeling_bert import BertForImageCaptioning
-from transformers.pytorch_transformers import BertTokenizer, BertConfig
-from transformers.pytorch_transformers import AdamW, WarmupLinearSchedule, WarmupConstantSchedule
+# from transformers.pytorch_transformers import BertTokenizer, BertConfig
+from transformers.models.bert import BertTokenizer, BertConfig
+# from transformers.pytorch_transformers import AdamW, WarmupLinearSchedule, WarmupConstantSchedule
+from transformers import AdamW, get_constant_schedule_with_warmup, get_linear_schedule_with_warmup
 
 
 class CaptionTSVDataset(Dataset):
@@ -433,10 +435,10 @@ def train(args, train_dataloader, val_dataset, model, tokenizer):
     ]
     optimizer = AdamW(grouped_parameters, lr=args.learning_rate, eps=args.adam_epsilon)
     if args.scheduler == "constant":
-        scheduler = WarmupConstantSchedule(
+        scheduler = get_constant_schedule_with_warmup(
                 optimizer, warmup_steps=args.warmup_steps)
     elif args.scheduler == "linear":
-        scheduler = WarmupLinearSchedule(
+        scheduler = get_linear_schedule_with_warmup(
                 optimizer, warmup_steps=args.warmup_steps, t_total=t_total)
     else:
         raise ValueError("Unknown scheduler type: {}".format(args.scheduler))

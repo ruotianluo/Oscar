@@ -7,13 +7,16 @@ import torch
 from torch import nn
 import torch.nn.functional as F
 from torch.nn import CrossEntropyLoss, MSELoss
-from transformers.pytorch_transformers.modeling_bert import (BertEmbeddings, 
+# from transformers.pytorch_transformers.modeling_bert import (BertEmbeddings, 
+from transformers.models.bert.modeling_bert import (BertEmbeddings, 
         BertSelfAttention, BertAttention, BertEncoder, BertLayer, 
         BertSelfOutput, BertIntermediate, BertOutput,
-        BertPooler, BertLayerNorm, BertPreTrainedModel,
+        BertPooler, BertPreTrainedModel,
 		BertPredictionHeadTransform, BertOnlyMLMHead, BertLMPredictionHead,
-        BertConfig, BERT_PRETRAINED_MODEL_ARCHIVE_MAP,
+        BertConfig,
         load_tf_weights_in_bert)
+from transformers.models.bert import BERT_PRETRAINED_CONFIG_ARCHIVE_MAP
+BertLayerNorm = nn.LayerNorm
 from .modeling_utils import CaptionPreTrainedModel, ImgPreTrainedModel
 from ..utils.cbs import ConstrainedBeamSearch, select_best_beam_with_constraints
 
@@ -964,7 +967,7 @@ class BertImgForPreTraining(ImgPreTrainedModel):
 
     """
     config_class = BertConfig
-    pretrained_model_archive_map = BERT_PRETRAINED_MODEL_ARCHIVE_MAP
+    pretrained_model_archive_map = BERT_PRETRAINED_CONFIG_ARCHIVE_MAP
     load_tf_weights = load_tf_weights_in_bert
     base_model_prefix = "bert"
 
